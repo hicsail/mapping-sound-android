@@ -51,13 +51,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-
                     if(holder.mCollapsable == null) {
                         mListener.onCollapse((ViewGroup) v, holder.mItem);
                         holder.mCollapsable = (LinearLayout) v.findViewById(R.id.record_detail);
                     }
-                    else
-                        ((ViewGroup)v).removeView(holder.mCollapsable);
+                    else {
+                        ((ViewGroup) v).removeView(holder.mCollapsable);
+                        holder.mCollapsable = null;
+                    }
                 }
             }
         });
