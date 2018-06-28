@@ -11,27 +11,17 @@ import android.view.View;
 
 import android.widget.Button;
 
-import com.sail.mappingsound.mappingsound.model.RecordsData;
+import com.sail.mappingsound.mappingsound.model.RecordItem;
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener{
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private Button navigationHistoryButton;
     private Button navigationRecordButton;
 
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
+    private Fragment fragments[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +38,10 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         navigationHistoryButton = (Button) findViewById(R.id.navigation_history);
         navigationRecordButton = (Button) findViewById(R.id.navigation_record);
         setupClickListener();
-      
+
+        fragments = new Fragment[2];
+        fragments[0] = new NavigationRecord();
+        fragments[1] = new NavigationHistory();
     }
   
     public void setupClickListener(){
@@ -68,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     @Override
-    public void onListFragmentInteraction(RecordsData.RecordItem item) {
+    public void onListFragmentInteraction(RecordItem item) {
 
     }
 
@@ -88,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0)
-                return new Navigation_Record();
-            else return new ItemFragment();
+                return fragments[0];
+            else return fragments[1];
         }
 
         @Override
@@ -97,5 +90,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             // Show 2 total pages.
             return 2;
         }
+    }
+
+    NavigationHistory getNavigationHistoryFragment(){
+        return (NavigationHistory) fragments[1];
     }
 }

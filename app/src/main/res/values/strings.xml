@@ -10,7 +10,7 @@
     <!-- record fragment -->
     <string name="record_start">start</string>
     <string name="record_stop">stop</string>
-
+    <string name="record_info">Last Recording</string>
 
     <!-- history fragment -->
     <!-- TODO: Remove or change this placeholder text -->

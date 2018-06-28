@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.sail.mappingsound.mappingsound.model.RecordsData.RecordItem;
+
+import com.sail.mappingsound.mappingsound.model.RecordItem;
 
 import java.util.List;
 
@@ -18,12 +19,18 @@ import java.util.List;
  */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<RecordItem> mValues;
+    private List<RecordItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
     public MyItemRecyclerViewAdapter(List<RecordItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+    }
+
+
+    public void setRecords(List<RecordItem> items){
+        mValues = items;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -38,11 +45,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         holder.mItem = mValues.get(position);
 
 
-        holder.mPlace_title.setText(holder.mItem.place);
-        holder.mPlace.setText(holder.mItem.place);
-        holder.mType.setText(holder.mItem.type);
-        holder.mName.setText(holder.mItem.name);
-        holder.mAge.setText(""+holder.mItem.age);
+        holder.mPlace_title.setText(holder.mItem.getPlace());
+        holder.mPlace.setText(holder.mItem.getPlace());
+        holder.mType.setText(holder.mItem.getType());
+        holder.mName.setText(holder.mItem.getName());
+        holder.mAge.setText(""+holder.mItem.getAge());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +71,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     @Override
     public int getItemCount() {
+        if(mValues == null) return 0;
         return mValues.size();
     }
 
