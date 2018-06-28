@@ -10,13 +10,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-    <TextView
+    <Button
 
         android:id="@+id/play"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
         android:layout_margin="@dimen/text_margin"
-        android:text="play button"
+        android:text="play"
         android:background="@color/colorAccent" />
 
     <TextView
@@ -25,13 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin" />
 
-    <TextView
+    <Button
         android:background="@color/colorAccent"
         android:id="@+id/collapse"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
         android:layout_margin="@dimen/text_margin"
-        android:text="button collapse" />
+        android:text="expand" />
 
     </LinearLayout>
 

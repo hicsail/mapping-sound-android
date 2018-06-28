@@ -1,6 +1,5 @@
 package com.sail.mappingsound.mappingsound;
 
-import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,24 +44,31 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mPlace_title.setText(holder.mItem.getPlace());
+        holder.mPlaceTitle.setText(holder.mItem.getPlace());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.mExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    if(holder.mCollapsable == null) {
-                        mListener.onCollapse((ViewGroup) v, holder.mItem);
-                        holder.mCollapsable = (LinearLayout) v.findViewById(R.id.record_detail);
+                    if(holder.mRecordDetail == null) {
+                        mListener.onCollapse((ViewGroup) holder.mView, holder.mItem);
+                        holder.mRecordDetail = (LinearLayout) holder.mView.
+                                findViewById(R.id.record_detail);
                     }
                     else {
-                        ((ViewGroup) v).removeView(holder.mCollapsable);
-                        holder.mCollapsable = null;
+                        ((ViewGroup) holder.mView).removeView(holder.mRecordDetail);
+                        holder.mRecordDetail = null;
                     }
                 }
             }
         });
 
+        holder.mPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.playPressed(holder.mItem.getPath_to_record());
+            }
+        });
 
     }
 
@@ -74,8 +80,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mPlace_title;
-        public View mCollapsable;
+        public final TextView mPlaceTitle;
+        public Button mPlay;
+        public Button mExpand;
+
+        public View mRecordDetail;
 
         public final EditText mType;
         public final EditText mPlace;
@@ -86,8 +95,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mPlace_title = (TextView) view.findViewById(R.id.place_record_title);
-            mCollapsable = (LinearLayout) view.findViewById(R.id.record_detail);
+            mPlaceTitle = (TextView) view.findViewById(R.id.place_record_title);
+            mPlay = (Button) view.findViewById(R.id.play);
+            mExpand = (Button) view.findViewById(R.id.collapse);
+
+            mRecordDetail = (LinearLayout) view.findViewById(R.id.record_detail);
 
             mType = (EditText) view.findViewById(R.id.type);
             mPlace = (EditText) view.findViewById(R.id.place);

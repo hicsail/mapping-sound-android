@@ -23,6 +23,8 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
 
     private RecordItemViewModel mRecordViewModel;
     private MyItemRecyclerViewAdapter mAdapter;
+
+    private boolean isPlaying = false;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -109,7 +111,22 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
         });
         viewGroup.addView(detailedRecView);
 
+
     }
+
+    @Override
+    public void playPressed(String filename) {
+        if(!isPlaying){
+            ((MainActivity)getActivity()).stopPlaying();
+            ((MainActivity)getActivity()).startPlaying(filename);
+            isPlaying = true;
+        } else {
+            ((MainActivity)getActivity()).stopPlaying();
+            super.onStop();
+            isPlaying = false;
+        }
+    }
+
 
     public RecordItemViewModel getmRecordViewModel() {
         return mRecordViewModel;
