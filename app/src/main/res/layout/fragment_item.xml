@@ -12,8 +12,8 @@
     <TextView
 
         android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_margin="@dimen/text_margin"
         android:text="play button"
         android:background="@color/colorAccent" />
@@ -27,8 +27,8 @@
     <TextView
         android:background="@color/colorAccent"
         android:id="@+id/collapse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_margin="@dimen/text_margin"
         android:text="button collapse" />
 

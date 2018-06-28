@@ -52,7 +52,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                     // fragment is attached to one) that an item has been selected.
 
                     mListener.onListFragmentInteraction(holder.mItem);
-                    holder.mCollapsable.setVisibility(View.VISIBLE);
+                    if(holder.mCollapsable.getVisibility() == View.GONE) {
+                        holder.mCollapsable.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.mCollapsable.setVisibility(View.GONE);
+                    }
                 }
             }
         });

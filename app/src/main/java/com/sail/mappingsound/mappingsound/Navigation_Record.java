@@ -41,12 +41,12 @@ public class Navigation_Record extends Fragment {
             @Override
             public void onClick(View view) {
                 if(isRecording) {
-                    record_button.setText(R.string.record_stop);
+                    record_button.setText(R.string.record_start);
                     isRecording = false;
                     //stop the recording function save and stuff
                 }
                 else {
-                    record_button.setText(R.string.record_start);
+                    record_button.setText(R.string.record_stop);
                     isRecording = true;
                     //start the recording function save and stuff
                 }
