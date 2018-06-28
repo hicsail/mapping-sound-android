@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
 import com.sail.mappingsound.mappingsound.viewModel.RecordItemViewModel;
@@ -67,7 +69,45 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
     }
 
     @Override
-    public void onListFragmentInteraction(RecordItem item) {
+    public void onSaveEdit(RecordItem oldItem, RecordItem updatedItem) {
+
+        oldItem.setPlace(updatedItem.getPlace());
+        oldItem.setAge(updatedItem.getAge());
+        oldItem.setName(updatedItem.getName());
+        oldItem.setType(updatedItem.getType());
+
+        mRecordViewModel.update(oldItem);
+    }
+
+    @Override
+    public void onCollapse(ViewGroup viewGroup, final RecordItem recordItem) {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LinearLayout detailedRecView = (LinearLayout)
+                inflater.inflate(R.layout.record_item_detailed, null, false);
+
+        final MyItemRecyclerViewAdapter.ViewHolder holder = new
+                MyItemRecyclerViewAdapter.ViewHolder(detailedRecView);
+
+        holder.mType.setText(recordItem.getType());
+        holder.mPlace.setText(recordItem.getPlace());
+        holder.mAge.setText(recordItem.getAge() == null? "": ""+recordItem.getAge());
+        holder.mName.setText(recordItem.getName());
+
+        Button save = holder.mView.findViewById(R.id.save_edit);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get all values and
+                String type  = holder.mType.getText().toString();
+                String name  = holder.mName.getText().toString();
+                int age      = Integer.parseInt(holder.mAge.getText().toString());
+                String place = holder.mPlace.getText().toString();
+
+                onSaveEdit(recordItem, new RecordItem(null,type,place,name,age,
+                        null,null));
+            }
+        });
+        viewGroup.addView(detailedRecView);
 
     }
 

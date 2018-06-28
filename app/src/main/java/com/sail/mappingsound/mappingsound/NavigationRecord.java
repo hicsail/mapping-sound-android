@@ -14,7 +14,7 @@ public class NavigationRecord extends Fragment {
 
     Button recordButton;
     Button saveRecordButton;
-
+    MyItemRecyclerViewAdapter.ViewHolder recordItemView;
     boolean isRecording = false;
 
 
@@ -35,6 +35,7 @@ public class NavigationRecord extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_navigation_record, container, false);
         recordButton = (Button) view.findViewById(R.id.record_button);
         saveRecordButton = (Button) view.findViewById(R.id.save_edit);
+        recordItemView = new MyItemRecyclerViewAdapter.ViewHolder(view);
 
         attachListeners();
         return view;
@@ -62,8 +63,15 @@ public class NavigationRecord extends Fragment {
             @Override
             public void onClick(View view) {
                 NavigationHistory frag = ((MainActivity)getActivity()).getNavigationHistoryFragment();
-                RecordItem rec = new RecordItem(null,null,null,null,1,null,null
-                ,null);
+                RecordItem rec = new RecordItem(
+                        null,
+                        recordItemView.mType.getText().toString(),
+                        recordItemView.mPlace.getText().toString(),
+                        recordItemView.mName.getText().toString(),
+                        recordItemView.mAge.getText().toString().equals("") ?
+                                null:Integer.parseInt(recordItemView.mAge.getText().toString()),
+                        null,
+                        null);
                 frag.getmRecordViewModel().insert(rec);
             }
         });

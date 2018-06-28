@@ -22,20 +22,39 @@ public class RecordRepository {
 
 
     public void insert (RecordItem item) {
-        new insertAsyncTask(mRecordItemDao).execute(item);
+        new InsertAsyncTask(mRecordItemDao).execute(item);
     }
 
-    private static class insertAsyncTask extends AsyncTask<RecordItem, Void, Void> {
+    public void update (RecordItem item){
+        new EditAsyncTask(mRecordItemDao).execute(item);
+    }
+
+    private static class InsertAsyncTask extends AsyncTask<RecordItem, Void, Void> {
 
         private RecordItemDao mAsyncTaskDao;
 
-        insertAsyncTask(RecordItemDao dao) {
+        InsertAsyncTask(RecordItemDao dao) {
             mAsyncTaskDao = dao;
         }
 
         @Override
         protected Void doInBackground(final RecordItem... params) {
             mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    private static class EditAsyncTask extends AsyncTask<RecordItem, Void, Void> {
+
+        private RecordItemDao mAsyncTaskDao;
+
+        EditAsyncTask(RecordItemDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final RecordItem... params) {
+            mAsyncTaskDao.update(params[0]);
             return null;
         }
     }

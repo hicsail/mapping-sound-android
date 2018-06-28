@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b3995686a7c4874d19f9db8b53fc35f6",
+    "identityHash": "57bb4c97ce8e778a7123da35fd15bc93",
     "entities": [
       {
         "tableName": "record_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `type` TEXT, `place` TEXT, `name` TEXT, `age` INTEGER, `timestamp` TEXT, `coordinates` TEXT, `path_to_record` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `type` TEXT, `place` TEXT, `name` TEXT, `age` INTEGER, `timestamp` INTEGER NOT NULL, `coordinates` TEXT, `path_to_record` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -41,8 +41,8 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "coordinates",
@@ -69,7 +69,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b3995686a7c4874d19f9db8b53fc35f6\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"57bb4c97ce8e778a7123da35fd15bc93\")"
     ]
   }
 }

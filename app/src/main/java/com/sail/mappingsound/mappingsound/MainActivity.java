@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
 
-public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private Button navigationHistoryButton;
@@ -60,10 +60,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
     }
 
-    @Override
-    public void onListFragmentInteraction(RecordItem item) {
-
-    }
 
 
     /**

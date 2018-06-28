@@ -2,7 +2,6 @@ package com.sail.mappingsound.mappingsound.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
 
 @Entity(tableName = "record_table")
 public class RecordItem {
@@ -14,18 +13,18 @@ public class RecordItem {
     private  String place;
     private  String name;
     private  Integer age;
-    private  String timestamp;
+    private  long timestamp;
     private  String coordinates;
     private  String path_to_record;
 
-    public RecordItem(Integer id, String type, String place, String name, Integer age, String timestamp,
+    public RecordItem(Integer id, String type, String place, String name, Integer age,
                       String coordinates, String path_to_record) {
         this.id = id;
         this.type = type;
         this.place = place;
         this.name = name;
         this.age = age;
-        this.timestamp = timestamp;
+        this.timestamp = System.currentTimeMillis();
         this.coordinates = coordinates;
         this.path_to_record = path_to_record;
 
@@ -71,11 +70,11 @@ public class RecordItem {
         this.age = age;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -94,4 +93,6 @@ public class RecordItem {
     public void setPath_to_record(String path_to_record) {
         this.path_to_record = path_to_record;
     }
+
+
 }

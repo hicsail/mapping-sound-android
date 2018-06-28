@@ -1,9 +1,11 @@
 package com.sail.mappingsound.mappingsound;
 
+import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,30 +45,24 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-
-
         holder.mPlace_title.setText(holder.mItem.getPlace());
-        holder.mPlace.setText(holder.mItem.getPlace());
-        holder.mType.setText(holder.mItem.getType());
-        holder.mName.setText(holder.mItem.getName());
-        holder.mAge.setText(""+holder.mItem.getAge());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
 
-                    mListener.onListFragmentInteraction(holder.mItem);
-                    if(holder.mCollapsable.getVisibility() == View.GONE) {
-                        holder.mCollapsable.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.mCollapsable.setVisibility(View.GONE);
+                    if(holder.mCollapsable == null) {
+                        mListener.onCollapse((ViewGroup) v, holder.mItem);
+                        holder.mCollapsable = (LinearLayout) v.findViewById(R.id.record_detail);
                     }
+                    else
+                        ((ViewGroup)v).removeView(holder.mCollapsable);
                 }
             }
         });
+
+
     }
 
     @Override
@@ -75,10 +71,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mPlace_title;
-        public final View mCollapsable;
+        public View mCollapsable;
 
         public final EditText mType;
         public final EditText mPlace;

@@ -2,7 +2,6 @@
 <LinearLayout android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:visibility="gone"
     android:id="@+id/record_detail"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
@@ -78,7 +77,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/age"
             android:id="@+id/age"
-            android:inputType="text"/>
+            android:inputType="number"/>
     </LinearLayout>
 
     <Button

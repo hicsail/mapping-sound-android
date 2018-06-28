@@ -24,6 +24,7 @@ public class RecordItemViewModel extends AndroidViewModel {
 
         public LiveData<List<RecordItem>> getmAllRecords() { return mAllRecords; }
 
-        public void insert(RecordItem word) { mRepository.insert(word); }
+        public void insert(RecordItem recordItem) { mRepository.insert(recordItem); }
+        public void update(RecordItem recordItem) { mRepository.update(recordItem); }
 
 }
