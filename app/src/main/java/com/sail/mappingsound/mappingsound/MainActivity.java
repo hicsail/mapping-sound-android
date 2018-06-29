@@ -1,10 +1,21 @@
 package com.sail.mappingsound.mappingsound;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.PersistableBundle;
+import android.os.RemoteException;
+import android.provider.MediaStore;
+import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +29,8 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
 
@@ -35,10 +48,11 @@ public class MainActivity extends AppCompatActivity {
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
-    private MediaRecorder mRecorder = null;
-    private MediaPlayer mPlayer = null;
 
     private static final String LOG_TAG = "MainActivity";
+
+    MediaControllerService mService;
+    boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
         fragments = new Fragment[2];
         fragments[0] = new NavigationRecord();
         fragments[1] = new NavigationHistory();
+
+        Intent intent = new Intent(this, MediaControllerService.class);
+        startService(intent);
+        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
     }
   
     public void setupClickListener(){
@@ -95,14 +114,12 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position == 0)
-                return fragments[0];
+            if(position == 0) return fragments[0];
             else return fragments[1];
         }
 
         @Override
         public int getCount() {
-            // Show 2 total pages.
             return 2;
         }
     }
@@ -127,59 +144,99 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MediaControllerService.LocalBinder binder = (MediaControllerService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
     @Override
-    public void onStop() {
-        super.onStop();
-        if (mRecorder != null) {
-            mRecorder.release();
-            mRecorder = null;
-        }
+    protected void onStart() {
+        super.onStart();
 
-        if (mPlayer != null) {
-            mPlayer.release();
-            mPlayer = null;
-        }
     }
 
-    public void startRecording(String filename) {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(filename);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        unbindService(mConnection);
+//        mBound = false;
+//    }
 
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-
-        mRecorder.start();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+        mBound = false;
     }
 
-    public void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+    public void startRecording(String pathname){
+        if (mBound) {
+            // Call a method from the LocalService.
+            // However, if this call were something that might hang, then this request should
+            // occur in a separate thread to avoid slowing down the activity performance.
+            mService.startRecording(pathname);
+            Toast.makeText(this, "recording", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
-    public void startPlaying(String mFileName) {
-        if(mPlayer == null) {
-            mPlayer = new MediaPlayer();
-            try {
-                mPlayer.setDataSource(mFileName);
-                mPlayer.prepare();
-                mPlayer.start();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "prepare() failed");
-            }
+    public void stopRecording(){
+        if (mBound) {
+            // Call a method from the LocalService.
+            // However, if this call were something that might hang, then this request should
+            // occur in a separate thread to avoid slowing down the activity performance.
+            mService.stopRecording();
+            Toast.makeText(this, "stopped recording", Toast.LENGTH_SHORT).show();
         }
+
     }
 
-    public void stopPlaying() {
-        if(mPlayer != null) {
-            mPlayer.release();
-            mPlayer = null;
+    public void startPlaying(String pathname){
+        if (mBound) {
+            // Call a method from the LocalService.
+            // However, if this call were something that might hang, then this request should
+            // occur in a separate thread to avoid slowing down the activity performance.
+            mService.startPlaying(pathname);
+            Toast.makeText(this, "start playing", Toast.LENGTH_SHORT).show();
         }
+
+    }
+    public void stopPlaying(){
+        if (mBound) {
+            // Call a method from the LocalService.
+            // However, if this call were something that might hang, then this request should
+            // occur in a separate thread to avoid slowing down the activity performance.
+            mService.stopPlaying();
+            Toast.makeText(this, "stopped playing", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, MediaControllerService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    public boolean isPlaying(){
+        return mService.isPlaying();
+    }
+
+    public boolean isRecording(){
+        return mService.isRecording();
     }
 }

@@ -25,11 +25,14 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
     private MyItemRecyclerViewAdapter mAdapter;
 
     private boolean isPlaying = false;
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+
     public NavigationHistory() {
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isPlaying = ((MainActivity)getActivity()).isPlaying();
     }
 
     @Override
@@ -115,12 +118,13 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
     }
 
     @Override
-    public void playPressed(String filename) {
+    public void playPressed(String pathname) {
         if(!isPlaying){
-            ((MainActivity)getActivity()).stopPlaying();
-            ((MainActivity)getActivity()).startPlaying(filename);
+            //MediaControllerService.startPlaying(getContext(), filename);
+            ((MainActivity)getActivity()).startPlaying(pathname);
             isPlaying = true;
         } else {
+            //MediaControllerService.stopPlaying(getContext());
             ((MainActivity)getActivity()).stopPlaying();
             super.onStop();
             isPlaying = false;

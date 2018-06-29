@@ -1,5 +1,6 @@
 package com.sail.mappingsound.mappingsound;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -38,10 +39,21 @@ public class NavigationRecord extends Fragment {
         saveRecordButton.setVisibility(View.GONE);
 
         recordItemView = new MyItemRecyclerViewAdapter.ViewHolder(view);
+
         attachListeners();
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        isRecording = ((MainActivity)getActivity()).isRecording();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
     private void addNewRecord(){
         NavigationHistory frag = ((MainActivity)getActivity()).getNavigationHistoryFragment();
@@ -64,9 +76,11 @@ public class NavigationRecord extends Fragment {
                     recordButton.setText(R.string.record_start);
                     isRecording = false;
                     //stop the recording function save and stuff
-                    ((MainActivity)getActivity()).stopRecording();
+                    //MediaControllerService.stopRecording(getContext());
+
                     //start the recording function save and stuff
                     addNewRecord();
+                    ((MainActivity)getActivity()).stopRecording();
                 }
                 else {
                     recordButton.setText(R.string.record_stop);
@@ -74,6 +88,8 @@ public class NavigationRecord extends Fragment {
                     //recording
                     mFileName = getActivity().getExternalFilesDir(null).getAbsolutePath();
                     mFileName += "/audiorecordtest"+(int)(Math.random()*100000)+".3gp";
+                    //MediaControllerService.startRecording(getContext(), mFileName);
+
                     ((MainActivity)getActivity()).startRecording(mFileName);
                 }
             }

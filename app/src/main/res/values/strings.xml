@@ -22,4 +22,9 @@
     <string name="age">Age</string>
     <string name="save_edit">Save Edit</string>
     <string name="title_activity_audio_record_test">AudioRecordTest</string>
+    <string name="remote_service_started">remove service started</string>
+    <string name="remote_service_stopped">remote service stopped</string>
+    <string name="local_service_label">recording</string>
+    <string name="remote_service_connected">connected</string>
+    <string name="local_service_disconnected">service disconnected</string>
 </resources>
