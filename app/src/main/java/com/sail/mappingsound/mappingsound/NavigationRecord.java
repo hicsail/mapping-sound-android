@@ -14,7 +14,7 @@ import com.sail.mappingsound.mappingsound.model.RecordItem;
 public class NavigationRecord extends Fragment {
 
     Button recordButton;
-    Button saveRecordButton;
+
     MyItemRecyclerViewAdapter.ViewHolder recordItemView;
     boolean isRecording = false;
     String mFileName;
@@ -35,8 +35,11 @@ public class NavigationRecord extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_navigation_record, container, false);
         recordButton = (Button) view.findViewById(R.id.record_button);
-        saveRecordButton = (Button) view.findViewById(R.id.save_edit);
+
+        Button saveRecordButton = (Button) view.findViewById(R.id.save_edit);
         saveRecordButton.setVisibility(View.GONE);
+        Button deleteRecordButton = (Button) view.findViewById(R.id.delete);
+        deleteRecordButton.setVisibility(View.GONE);
 
         recordItemView = new MyItemRecyclerViewAdapter.ViewHolder(view);
 

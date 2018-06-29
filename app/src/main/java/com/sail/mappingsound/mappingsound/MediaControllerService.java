@@ -70,10 +70,15 @@ public class MediaControllerService extends Service {
     }
 
     public void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
-        isRecording = false;
+
+        try {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+            isRecording = false;
+        } catch(RuntimeException ex){
+            //TODO cleanup delete file, this happens when a stop is fired right after a start
+        }
     }
 
     @Override

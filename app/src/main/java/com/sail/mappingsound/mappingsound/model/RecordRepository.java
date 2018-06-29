@@ -29,6 +29,9 @@ public class RecordRepository {
         new EditAsyncTask(mRecordItemDao).execute(item);
     }
 
+    public void delete (RecordItem item) {
+        new DelAsyncTask(mRecordItemDao).execute(item);
+    }
     private static class InsertAsyncTask extends AsyncTask<RecordItem, Void, Void> {
 
         private RecordItemDao mAsyncTaskDao;
@@ -55,6 +58,21 @@ public class RecordRepository {
         @Override
         protected Void doInBackground(final RecordItem... params) {
             mAsyncTaskDao.update(params[0]);
+            return null;
+        }
+    }
+
+    private static class DelAsyncTask extends AsyncTask<RecordItem, Void, Void> {
+
+        private RecordItemDao mAsyncTaskDao;
+
+        DelAsyncTask(RecordItemDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final RecordItem... params) {
+            mAsyncTaskDao.delete(params[0]);
             return null;
         }
     }

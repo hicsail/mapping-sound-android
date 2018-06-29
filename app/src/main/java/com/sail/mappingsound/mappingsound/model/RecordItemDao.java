@@ -2,6 +2,7 @@ package com.sail.mappingsound.mappingsound.model;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
@@ -16,6 +17,9 @@ public interface RecordItemDao {
 
     @Update
     void update(RecordItem recordItem);
+
+    @Delete
+    void delete(RecordItem recordItem);
 
     @Query("DELETE FROM record_table")
     void deleteAll();

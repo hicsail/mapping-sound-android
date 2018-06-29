@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -21,9 +23,12 @@ import java.util.List;
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private List<RecordItem> mValues;
+    private HashSet<Integer> expandedItems;
+
     private final OnListFragmentInteractionListener mListener;
 
     public MyItemRecyclerViewAdapter(List<RecordItem> items, OnListFragmentInteractionListener listener) {
+        expandedItems = new HashSet<>();
         mValues = items;
         mListener = listener;
     }
@@ -46,18 +51,19 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         holder.mItem = mValues.get(position);
         holder.mPlaceTitle.setText(holder.mItem.getPlace());
 
+        holder.setIsRecyclable(false);
         holder.mExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    if(holder.mRecordDetail == null) {
-                        mListener.onCollapse((ViewGroup) holder.mView, holder.mItem);
-                        holder.mRecordDetail = (LinearLayout) holder.mView.
-                                findViewById(R.id.record_detail);
-                    }
-                    else {
-                        ((ViewGroup) holder.mView).removeView(holder.mRecordDetail);
-                        holder.mRecordDetail = null;
+                    View view = (LinearLayout) holder.mView.findViewById(R.id.record_detail);
+
+                    if(expandedItems.contains(holder.mItem.getId())){
+                        ((ViewGroup) holder.mView).removeView(view);
+                        expandedItems.remove(holder.mItem.getId());
+                    } else {
+                        expandedItems.add(holder.mItem.getId());
+                        mListener.onCollapse((ViewGroup) holder.mView, holder.mItem, expandedItems);
                     }
                 }
             }

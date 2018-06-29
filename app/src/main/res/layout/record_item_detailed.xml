@@ -80,10 +80,26 @@
             android:inputType="number"/>
     </LinearLayout>
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/save_edit"
-        android:text="@string/save_edit"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/save_edit"
+            android:text="@string/save_edit"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/delete"
+            android:text="@string/delete"/>
+    </LinearLayout>
+
+
+
 </LinearLayout>

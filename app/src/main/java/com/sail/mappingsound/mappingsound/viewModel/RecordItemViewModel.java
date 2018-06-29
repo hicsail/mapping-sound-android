@@ -26,5 +26,6 @@ public class RecordItemViewModel extends AndroidViewModel {
 
         public void insert(RecordItem recordItem) { mRepository.insert(recordItem); }
         public void update(RecordItem recordItem) { mRepository.update(recordItem); }
+        public void delete(RecordItem recordItem) { mRepository.delete(recordItem); }
 
 }

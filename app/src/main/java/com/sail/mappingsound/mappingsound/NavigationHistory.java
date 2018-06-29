@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.sail.mappingsound.mappingsound.model.RecordItem;
 import com.sail.mappingsound.mappingsound.viewModel.RecordItemViewModel;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class NavigationHistory extends Fragment implements OnListFragmentInteractionListener{
@@ -85,7 +86,8 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
     }
 
     @Override
-    public void onCollapse(ViewGroup viewGroup, final RecordItem recordItem) {
+    public void onCollapse(ViewGroup viewGroup, final RecordItem recordItem,
+                           final HashSet<Integer> expandables) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         LinearLayout detailedRecView = (LinearLayout)
                 inflater.inflate(R.layout.record_item_detailed, null, false);
@@ -99,6 +101,8 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
         holder.mName.setText(recordItem.getName());
 
         Button save = holder.mView.findViewById(R.id.save_edit);
+        Button del = holder.mView.findViewById(R.id.delete);
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,6 +114,14 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
 
                 onSaveEdit(recordItem, new RecordItem(null,type,place,name,age,
                         null,null));
+            }
+        });
+
+        del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecordViewModel.delete(recordItem);
+                expandables.remove(recordItem.getId());
             }
         });
         viewGroup.addView(detailedRecView);
