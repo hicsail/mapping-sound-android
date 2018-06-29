@@ -6,16 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.PersistableBundle;
-import android.os.RemoteException;
-import android.provider.MediaStore;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,16 +16,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.sail.mappingsound.mappingsound.model.RecordItem;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,9 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Fragment fragments[];
 
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-    private boolean permissionToRecordAccepted = false;
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.ACCESS_FINE_LOCATION};
+
+    private static final int REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION = 200;
+    private boolean permissionAccepted = false;
 
     private static final String LOG_TAG = "MainActivity";
 
@@ -59,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        ActivityCompat.requestPermissions(this, permissions,
+                REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -135,12 +123,14 @@ public class MainActivity extends AppCompatActivity {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
-            case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            case REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION:
+                permissionAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                grantResults[1] == PackageManager.PERMISSION_GRANTED);
+
                 break;
         }
 
-        if (!permissionToRecordAccepted ) finish();
+        if (!permissionAccepted) finish();
 
     }
 

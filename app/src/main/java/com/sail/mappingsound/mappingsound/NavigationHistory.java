@@ -109,7 +109,8 @@ public class NavigationHistory extends Fragment implements OnListFragmentInterac
                 //get all values and
                 String type  = holder.mType.getText().toString();
                 String name  = holder.mName.getText().toString();
-                int age      = Integer.parseInt(holder.mAge.getText().toString());
+                Integer age      = holder.mAge.getText().toString().equals("") ? null :
+                        Integer.parseInt(holder.mAge.getText().toString());
                 String place = holder.mPlace.getText().toString();
 
                 onSaveEdit(recordItem, new RecordItem(null,type,place,name,age,
