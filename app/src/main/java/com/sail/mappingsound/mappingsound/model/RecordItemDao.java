@@ -24,7 +24,7 @@ public interface RecordItemDao {
     @Query("DELETE FROM record_table")
     void deleteAll();
 
-    @Query("SELECT * from record_table ORDER BY timestamp ASC")
+    @Query("SELECT * from record_table ORDER BY timestamp DESC")
     LiveData<List<RecordItem>> getAllrecords();
 
 }

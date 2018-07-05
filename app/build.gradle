@@ -46,4 +46,7 @@ dependencies {
     // Lifecycle components
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
+
+    //google play services
+    implementation "com.google.android.gms:play-services-location:15.0.1"
 }

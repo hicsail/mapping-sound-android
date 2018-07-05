@@ -1,6 +1,5 @@
 package com.sail.mappingsound.mappingsound;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,14 +9,14 @@ import android.widget.Button;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
 
-
-public class NavigationRecord extends Fragment {
+public class NavigationRecord extends Fragment implements OnLocationListener {
 
     Button recordButton;
 
     MyItemRecyclerViewAdapter.ViewHolder recordItemView;
     boolean isRecording = false;
     String mFileName;
+    private String mLocations = "";
 
     public NavigationRecord() {
         // Required empty public constructor
@@ -67,10 +66,11 @@ public class NavigationRecord extends Fragment {
                 recordItemView.mName.getText().toString(),
                 recordItemView.mAge.getText().toString().equals("") ?
                         null:Integer.parseInt(recordItemView.mAge.getText().toString()),
-                null,
+                mLocations,
                 mFileName);
         frag.getmRecordViewModel().insert(rec);
     }
+
     private void attachListeners(){
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,17 +85,23 @@ public class NavigationRecord extends Fragment {
                     addNewRecord();
                     ((MainActivity)getActivity()).stopRecording();
                 }
+
                 else {
                     recordButton.setText(R.string.record_stop);
                     isRecording = true;
                     //recording
                     mFileName = getActivity().getExternalFilesDir(null).getAbsolutePath();
                     mFileName += "/audiorecordtest"+(int)(Math.random()*100000)+".3gp";
-                    //MediaControllerService.startRecording(getContext(), mFileName);
-
+                    //reset locations
+                    mLocations = "";
                     ((MainActivity)getActivity()).startRecording(mFileName);
                 }
             }
         });
+    }
+
+    @Override
+    public void onLocationReceived(double latitude, double longitude) {
+        mLocations += latitude + "," + longitude;
     }
 }

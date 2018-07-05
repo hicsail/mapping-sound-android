@@ -42,8 +42,10 @@ public class MediaControllerService extends Service {
             mPlayer.setDataSource(mFilename);
             mPlayer.prepare();
             mPlayer.start();
+            isPlaying = true;
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
+            isPlaying = false;
         }
     }
 
@@ -105,4 +107,6 @@ public class MediaControllerService extends Service {
     public boolean isRecording(){
         return isRecording;
     }
+
+
 }
