@@ -14,6 +14,7 @@ import com.sail.mappingsound.mappingsound.model.RecordItem;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link RecordItem} and makes a call to the
@@ -49,7 +50,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mPlaceTitle.setText(holder.mItem.getPlace());
+        holder.mPlace_time.setText(formatTitleView(holder.mItem.getPlace(),
+                holder.mItem.getTimestamp()));
 
         holder.setIsRecyclable(false);
         holder.mExpand.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +88,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mPlaceTitle;
+        public final TextView mPlace_time;
         public Button mPlay;
         public Button mExpand;
 
@@ -101,7 +103,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mPlaceTitle = (TextView) view.findViewById(R.id.place_record_title);
+            mPlace_time = (TextView) view.findViewById(R.id.place_time);
             mPlay = (Button) view.findViewById(R.id.play);
             mExpand = (Button) view.findViewById(R.id.collapse);
 
@@ -113,5 +115,16 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             mAge = (EditText) view.findViewById(R.id.age);
         }
 
+    }
+
+    private String formatTitleView(String place, long timestamp){
+        if(place == null) place = "";
+        if(place.length() > 10) place = place.substring(0,10) + "...";
+
+        return place + " | " + convertTimeStampToDate(timestamp);
+    }
+    private String convertTimeStampToDate(long timestamp){
+        return  new java.text.SimpleDateFormat(
+                "dd/MM/yyyy HH:mm").format(new java.util.Date(timestamp));
     }
 }

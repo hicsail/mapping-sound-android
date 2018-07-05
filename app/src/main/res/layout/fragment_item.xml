@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/row_container">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-    <Button
+        <Button
 
-        android:id="@+id/play"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:layout_margin="@dimen/text_margin"
-        android:text="play"
-        android:background="@color/colorAccent" />
+            android:id="@+id/play"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_margin="2dp"
+            android:background="@color/colorAccent"
+            android:text="play" />
 
-    <TextView
-        android:id="@+id/place_record_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" />
+        <TextView
+            android:id="@+id/place_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp" />
 
-    <Button
-        android:background="@color/colorAccent"
-        android:id="@+id/collapse"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:layout_margin="@dimen/text_margin"
-        android:text="expand" />
+
+        <Button
+            android:id="@+id/collapse"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_margin="2dp"
+            android:background="@color/colorAccent"
+            android:text="expand" />
 
     </LinearLayout>
 

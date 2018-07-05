@@ -41,11 +41,6 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_navigation_record, container, false);
         recordButton = (Button) view.findViewById(R.id.record_button);
-
-        Button saveRecordButton = (Button) view.findViewById(R.id.save_edit);
-        saveRecordButton.setVisibility(View.GONE);
-        Button deleteRecordButton = (Button) view.findViewById(R.id.delete);
-        deleteRecordButton.setVisibility(View.GONE);
         exportDatabase = (Button) view.findViewById(R.id.export_db);
 
         recordItemView = new MyItemRecyclerViewAdapter.ViewHolder(view);
@@ -69,11 +64,10 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
         NavigationHistory frag = ((MainActivity) getActivity()).getNavigationHistoryFragment();
         RecordItem rec = new RecordItem(
                 null,
-                recordItemView.mType.getText().toString(),
-                recordItemView.mPlace.getText().toString(),
-                recordItemView.mName.getText().toString(),
-                recordItemView.mAge.getText().toString().equals("") ?
-                        null : Integer.parseInt(recordItemView.mAge.getText().toString()),
+                null,
+                null,
+                null,
+                null,
                 mLocations,
                 mFileName);
         frag.getmRecordViewModel().insert(rec);
