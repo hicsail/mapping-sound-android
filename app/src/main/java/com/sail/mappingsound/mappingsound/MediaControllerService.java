@@ -52,6 +52,7 @@ public class MediaControllerService extends Service {
     public void stopPlaying() {
         mPlayer.release();
         mPlayer = null;
+        isPlaying = false;
     }
 
     public void startRecording(String mFileName) {
