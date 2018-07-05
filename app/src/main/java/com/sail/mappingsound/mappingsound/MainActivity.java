@@ -8,19 +8,17 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -39,31 +37,47 @@ import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION = 200;
+    private static final String LOG_TAG = "MainActivity";
+    MediaControllerService mService;
+    boolean mBound = false;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private Button navigationHistoryButton;
     private Button navigationRecordButton;
-
     private ViewPager mViewPager;
     private Fragment fragments[];
-
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO,
+    private String[] permissions = {Manifest.permission.RECORD_AUDIO,
             Manifest.permission.ACCESS_FINE_LOCATION};
-
-    private static final int REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION = 200;
     private boolean permissionAccepted = false;
-
-    private static final String LOG_TAG = "MainActivity";
-
-    MediaControllerService mService;
-    boolean mBound = false;
-
     private LocationCallback mLocationCallback;
     private FusedLocationProviderClient mFusedLocationClient;
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MediaControllerService.LocalBinder binder = (MediaControllerService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //prevent activity from going to sleep
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         ActivityCompat.requestPermissions(this, permissions,
                 REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION);
@@ -96,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
                     // Update UI with location data
                     // ...
                     //save to db
-                    ((OnLocationListener)getNavigationRecordFragment()).onLocationReceived(
+                    ((OnLocationListener) getNavigationRecordFragment()).onLocationReceived(
                             location.getLatitude(), location.getLongitude());
 
-                    Toast.makeText(MainActivity.this, (""+location.getLatitude()+ "," +
+                    Toast.makeText(MainActivity.this, ("" + location.getLatitude() + "," +
                             location.getLongitude()), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -107,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-  
-    public void setupClickListener(){
+
+    public void setupClickListener() {
         navigationRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,37 +138,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position == 0) return getNavigationRecordFragment();
-            else return getNavigationHistoryFragment();
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-    }
-
-    public NavigationHistory getNavigationHistoryFragment(){
+    public NavigationHistory getNavigationHistoryFragment() {
         return (NavigationHistory) fragments[1];
     }
 
-    public NavigationRecord getNavigationRecordFragment(){
+    public NavigationRecord getNavigationRecordFragment() {
         return (NavigationRecord) fragments[0];
     }
 
@@ -164,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
                                            @NonNull int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_RECORD_AUDIO_AND_FINE_LOCATION_PERMISSION:
                 permissionAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[1] == PackageManager.PERMISSION_GRANTED);
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED);
 
                 break;
         }
@@ -176,28 +164,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            MediaControllerService.LocalBinder binder = (MediaControllerService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
-
     @Override
     protected void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+        mBound = false;
     }
 
 //    @Override
@@ -207,14 +184,7 @@ public class MainActivity extends AppCompatActivity {
 //        mBound = false;
 //    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(mConnection);
-        mBound = false;
-    }
-
-    public void startRecording(String pathname){
+    public void startRecording(String pathname) {
 
         if (mBound) {
             //start getting user location
@@ -230,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void stopRecording(){
+    public void stopRecording() {
         //stop getting user location
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
 
@@ -244,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void startPlaying(String pathname){
+    public void startPlaying(String pathname) {
 
         if (mBound) {
             // Call a method from the LocalService.
@@ -255,7 +225,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public void stopPlaying(){
+
+    public void stopPlaying() {
         if (mBound) {
             // Call a method from the LocalService.
             // However, if this call were something that might hang, then this request should
@@ -273,11 +244,13 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-    public boolean isPlaying(){
+    public boolean isPlaying() {
+        if (mService == null) return false;
         return mService.isPlaying();
     }
 
-    public boolean isRecording(){
+    public boolean isRecording() {
+        if (mService == null) return false;
         return mService.isRecording();
     }
 
@@ -305,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                         LocationServices.getFusedLocationProviderClient(MainActivity.this);
                 try {
                     mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
-                } catch (SecurityException e){
+                } catch (SecurityException e) {
                     //TODO
                     e.printStackTrace();
                 }
@@ -331,5 +304,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            if (position == 0) return getNavigationRecordFragment();
+            else return getNavigationHistoryFragment();
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
     }
 }

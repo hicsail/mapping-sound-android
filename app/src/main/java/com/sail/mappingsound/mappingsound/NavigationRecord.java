@@ -1,6 +1,5 @@
 package com.sail.mappingsound.mappingsound;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
-import com.sail.mappingsound.mappingsound.model.RecordItemDao;
 import com.sail.mappingsound.mappingsound.model.RecordRoomDatabase;
 
 public class NavigationRecord extends Fragment implements OnLocationListener {
@@ -41,7 +39,7 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_navigation_record, container, false);
+        View view = inflater.inflate(R.layout.fragment_navigation_record, container, false);
         recordButton = (Button) view.findViewById(R.id.record_button);
 
         Button saveRecordButton = (Button) view.findViewById(R.id.save_edit);
@@ -59,7 +57,7 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
     @Override
     public void onResume() {
         super.onResume();
-        isRecording = ((MainActivity)getActivity()).isRecording();
+        isRecording = ((MainActivity) getActivity()).isRecording();
     }
 
     @Override
@@ -67,25 +65,25 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
         super.onPause();
     }
 
-    private void addNewRecord(){
-        NavigationHistory frag = ((MainActivity)getActivity()).getNavigationHistoryFragment();
+    private void addNewRecord() {
+        NavigationHistory frag = ((MainActivity) getActivity()).getNavigationHistoryFragment();
         RecordItem rec = new RecordItem(
                 null,
                 recordItemView.mType.getText().toString(),
                 recordItemView.mPlace.getText().toString(),
                 recordItemView.mName.getText().toString(),
                 recordItemView.mAge.getText().toString().equals("") ?
-                        null:Integer.parseInt(recordItemView.mAge.getText().toString()),
+                        null : Integer.parseInt(recordItemView.mAge.getText().toString()),
                 mLocations,
                 mFileName);
         frag.getmRecordViewModel().insert(rec);
     }
 
-    private void attachListeners(){
+    private void attachListeners() {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isRecording) {
+                if (isRecording) {
                     recordButton.setText(R.string.record_start);
                     isRecording = false;
                     //stop the recording function save and stuff
@@ -93,18 +91,16 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
 
                     //start the recording function save and stuff
                     addNewRecord();
-                    ((MainActivity)getActivity()).stopRecording();
-                }
-
-                else {
+                    ((MainActivity) getActivity()).stopRecording();
+                } else {
                     recordButton.setText(R.string.record_stop);
                     isRecording = true;
                     //recording
                     mFileName = getActivity().getExternalFilesDir(null).getAbsolutePath();
-                    mFileName += "/audiorecordtest"+(int)(Math.random()*100000)+".3gp";
+                    mFileName += "/audiorecordtest" + (int) (Math.random() * 100000) + ".3gp";
                     //reset locations
                     mLocations = "";
-                    ((MainActivity)getActivity()).startRecording(mFileName);
+                    ((MainActivity) getActivity()).startRecording(mFileName);
                 }
             }
         });
@@ -136,16 +132,18 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
             progDailog.setCancelable(false);
             progDailog.show();
         }
+
         @Override
         protected String doInBackground(Void... args) {
             //do something while spinning circling show
             return RecordRoomDatabase.exportDB(getActivity());
         }
+
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
             progDailog.dismiss();
-            Toast.makeText(getActivity(), res == null? "Error exporting db":
+            Toast.makeText(getActivity(), res == null ? "Error exporting db" :
                     "Database Exported to" + res, Toast.LENGTH_LONG).show();
         }
     }
