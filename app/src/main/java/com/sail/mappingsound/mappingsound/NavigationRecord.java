@@ -1,22 +1,31 @@
 package com.sail.mappingsound.mappingsound;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.sail.mappingsound.mappingsound.model.RecordItem;
+import com.sail.mappingsound.mappingsound.model.RecordItemDao;
+import com.sail.mappingsound.mappingsound.model.RecordRoomDatabase;
 
 public class NavigationRecord extends Fragment implements OnLocationListener {
 
     Button recordButton;
 
     MyItemRecyclerViewAdapter.ViewHolder recordItemView;
+
     boolean isRecording = false;
     String mFileName;
     private String mLocations = "";
+    private Button exportDatabase;
+
 
     public NavigationRecord() {
         // Required empty public constructor
@@ -39,6 +48,7 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
         saveRecordButton.setVisibility(View.GONE);
         Button deleteRecordButton = (Button) view.findViewById(R.id.delete);
         deleteRecordButton.setVisibility(View.GONE);
+        exportDatabase = (Button) view.findViewById(R.id.export_db);
 
         recordItemView = new MyItemRecyclerViewAdapter.ViewHolder(view);
 
@@ -98,10 +108,45 @@ public class NavigationRecord extends Fragment implements OnLocationListener {
                 }
             }
         });
+
+        exportDatabase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ExportAsyncTask().execute();
+            }
+        });
     }
 
     @Override
     public void onLocationReceived(double latitude, double longitude) {
         mLocations += latitude + "," + longitude;
+    }
+
+
+    class ExportAsyncTask extends AsyncTask<Void, Void, String> {
+        ProgressDialog progDailog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progDailog = new ProgressDialog(getContext());
+            progDailog.setMessage("exporting database...");
+            progDailog.setIndeterminate(false);
+            progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progDailog.setCancelable(false);
+            progDailog.show();
+        }
+        @Override
+        protected String doInBackground(Void... args) {
+            //do something while spinning circling show
+            return RecordRoomDatabase.exportDB(getActivity());
+        }
+        @Override
+        protected void onPostExecute(String res) {
+            super.onPostExecute(res);
+            progDailog.dismiss();
+            Toast.makeText(getActivity(), res == null? "Error exporting db":
+                    "Database Exported to" + res, Toast.LENGTH_LONG).show();
+        }
     }
 }

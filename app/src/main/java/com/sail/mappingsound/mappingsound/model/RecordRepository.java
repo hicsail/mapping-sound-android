@@ -32,6 +32,7 @@ public class RecordRepository {
     public void delete (RecordItem item) {
         new DelAsyncTask(mRecordItemDao).execute(item);
     }
+
     private static class InsertAsyncTask extends AsyncTask<RecordItem, Void, Void> {
 
         private RecordItemDao mAsyncTaskDao;

@@ -24,6 +24,15 @@
         android:text="@string/record_info"
         android:layout_gravity="center_horizontal"/>
 
+    <Button
+        android:id="@+id/export_db"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/export_db">
+
+    </Button>
     <include layout="@layout/record_item_detailed"/>
 
 
